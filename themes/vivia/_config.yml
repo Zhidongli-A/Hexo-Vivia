@@ -28,7 +28,7 @@ links:
   - name: Bilibili
     icon: fa-brands fa-bilibili
     url: https://space.bilibili.com/3546388008798309
-  - name: Telegram
+  - name:   QQ
     icon: fa-brands fa-qq
     url: tencent://message/?uin=3305162655&Site=&Menu=yes
   - name: GitHub
