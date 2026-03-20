@@ -21,7 +21,7 @@ banner:
 hue: 250                         # 主题色调 (例如：红: 0，橙: 60，蓝：260，紫：300，粉：345)
 
 # 个人信息
-avatar: https://avatars.githubusercontent.com/u/240259469?
+avatar: /OIP-C.webp
 author: 枝动力
 subtitle: 渺渺星海,唯我独芒!
 links:
@@ -33,7 +33,7 @@ links:
     url: tencent://message/?uin=3305162655&Site=&Menu=yes
   - name: GitHub
     icon: fa-brands fa-github
-    url: https://github.com/zhidongli-s
+    url: https://github.com/Zhidongli-A
   - name: Email
     icon: fa-regular fa-envelope
     url: mailto:Zhidongli@outlook.com
@@ -53,39 +53,7 @@ recent_posts_limits: 5
 categories:
   max_depth:           # 分类组件中显示的最大目录深度 (留空为不限制)
 
-# 第三方评论系统
-comment:
-  valine:
-    enable: false          # 是否启用 Valine 评论系统
-    appId: 
-    appKey: 
-    placeholder: Just go go
-    pageSize: 10
-    highlight: true
-    serverURLs: 
-    # 可在此添加其他 Valine 支持的配置项
-    # 详见 https://valine.js.org/configuration.html
-  twikoo:
-    enable: false           # 是否启用 Twikoo 评论系统
-    envID:
-    region:
-    path: location.pathname
-    lang:
-    # 详见 https://github.com/imaegoo/twikoo
 
-gitalk:
-  enable: true
-  ClientID: Ov23li18WCkxfQsFRyWo #Client ID
-  ClientSecret: f278b21b6b41fa4c268a8d9502371b1b0282200c #Client Secret
-  repo: Hexo-Vivia #你要存放的项目名
-  owner: Zhidongli-S #这个项目名的拥有者（GitHub账号或组织）
-  adminUser: ['Zhidongli-S'] #管理员用户
-  ID: location.pathname #页面ID
-  labels: ['Gitalk'] #GitHub issues的标签
-  perPage: 10 #每页多少个评论
-  pagerDirection: last #排序方式是从旧到新（first），还是从新到旧（last）
-  createIssueManually: false #是否自动创建isssue
-  distractionFreeMode: false #是否启用快捷键(cmd|ctrl + enter) 提交评论
 
 
 #Analytics
