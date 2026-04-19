@@ -1,7 +1,7 @@
 ---
 layout: past
 title: 如何使用Hexo构建一个博客网站
-date: 2025-12-19 22:11:29
+date: 2025-12-19 22:20:00
 categories: 傻瓜教程
 description: 从零开始，教你使用 Hexo 搭建个人博客。
 ---
