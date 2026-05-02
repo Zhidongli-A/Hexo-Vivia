@@ -105,7 +105,7 @@ curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_
 | 端口映射 | 6199:6199                              | Astrbot WebSocket端口 |
 | 端口映射 | 6185:6185                              | Astrbot管理面板端口       |
 | 端口映射 | 11451:11451                            | 其他服务端口（可选）          |
-| 重启策略 | 一只重启                          | 保证服务持续运行            |
+| 重启策略 | 一直重启                          | 保证服务持续运行            |
 
 1. 点击 **"确认"** 创建容器
 
@@ -178,6 +178,9 @@ Napcat需要基于QQ Linux版运行，以下是安装步骤：
 | 容器名称 | NapcCat                        | 自定义名称   |
 | 镜像   | mlikiowa/napcat-docker:latest | 已拉取的镜像  |
 | 网络模式 | 与Astrbot同一网络                  | 确保容器间通信 |
+| 端口映射 | 6099:6099                              | NapCat管理面板端口       
+| 重启策略 | 一直重启                          | 保证服务持续运行            |
+
 
 ***
 
