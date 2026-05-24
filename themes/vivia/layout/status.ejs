@@ -1,0 +1,33 @@
+<article id="page-<%= page.slug %>" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    <div class="article-main" style="width: 100%; margin-right: 0;">
+      <header class="article-header">
+        <%- partial('_partial/post/title', {post: page, index: false, class_name: 'p-name article-title'}) %>
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+
+        <!-- 状态监控面板 -->
+        <div class="status-controls">
+          <div class="status-summary">
+            <span><span class="status-dot status-dot--operational"></span> <span id="status-operational-count">0</span> 正常运行</span>
+            <span><span class="status-dot status-dot--degraded"></span> <span id="status-degraded-count">0</span> 性能下降</span>
+            <span><span class="status-dot status-dot--down"></span> <span id="status-down-count">0</span> 服务中断</span>
+          </div>
+          <button id="status-refresh-btn" class="status-refresh-btn" onclick="fetchStatus()">
+            <i class="fa-solid fa-rotate"></i> 刷新
+          </button>
+        </div>
+
+        <div class="status-cards" id="status-container">
+          <!-- 加载状态由 status.js 的 fetchStatus() 全权控制 -->
+        </div>
+
+        <%- page.content %>
+
+      </div>
+    </div>
+  </div>
+</article>
+
+<script src="<%- url_for("/js/status.js") %>"></script>
+<%# fetchStatus called by swup.js (initSwup for initial load, reInitPageContent for Swup nav) %>

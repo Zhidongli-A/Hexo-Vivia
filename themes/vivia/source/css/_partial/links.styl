@@ -1,0 +1,83 @@
+/* 友链卡片 */
+// 遵循主题 $card / $card-btn 规范：无边框、标准圆角、背景过渡悬停效果
+
+.links-grid
+  display: grid
+  grid-template-columns: repeat(3, 1fr)
+  gap: 16px
+  margin: 24px 0
+  @media mq-mobile
+    grid-template-columns: 1fr
+    gap: 12px
+  @media mq-tablet
+    grid-template-columns: repeat(2, 1fr)
+
+.link-card
+  display: flex
+  align-items: center
+  gap: 14px
+  padding: 16px 20px
+  border-radius: card-radius
+  border: none
+  background: var(--card-background)
+  text-decoration: none
+  cursor: pointer
+  transition: background trans-style
+  animation: link-card-enter 0.5s ease-out both
+  animation-delay: calc(var(--card-index, 0) * 0.06s)
+
+  &:hover
+    background: var(--card-btn-hover)
+
+  &:active
+    background: var(--card-btn-active)
+
+@keyframes link-card-enter
+  from
+    opacity: 0
+    transform: translateY(12px)
+  to
+    opacity: 1
+    transform: translateY(0)
+
+.link-avatar-wrap
+  flex-shrink: 0
+  width: 48px
+  height: 48px
+  border-radius: inner-radius
+  overflow: hidden
+  background: var(--neut-L10)
+  display: flex
+  align-items: center
+  justify-content: center
+
+.link-avatar
+  width: 100%
+  height: 100%
+  object-fit: cover
+  display: block
+
+.link-info
+  flex: 1
+  min-width: 0
+  overflow: hidden
+  display: flex
+  flex-direction: column
+
+.link-name
+  font-size: 16px
+  font-weight: 500
+  color: var(--link)
+  line-height: 1.4
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+
+.link-desc
+  margin-top: 2px
+  font-size: 13px
+  color: var(--article-meta)
+  line-height: 1.4
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis

@@ -1,0 +1,252 @@
+/*
+ * Status 监控页面样式
+ * 遵循主题设计规范，使用 CSS 自定义属性保持一致的外观
+ */
+
+// 控制栏
+.status-controls
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin: 24px 0
+  flex-wrap: wrap
+  gap: 12px
+
+.status-summary
+  display: flex
+  align-items: center
+  gap: 16px
+  font-size: 14px
+  color: var(--article-text)
+
+.status-dot
+  display: inline-block
+  width: 10px
+  height: 10px
+  border-radius: 50%
+  flex-shrink: 0
+
+  &--operational
+    background: #22c55e
+
+  &--degraded
+    background: #eab308
+
+  &--down
+    background: #ef4444
+
+.status-refresh-btn
+  @extend $text-btn
+  gap: 6px
+  font-size: 14px
+
+  i
+    font-size: 13px
+
+// 加载状态
+.status-loading
+  text-align: center
+  padding: 60px 20px
+  color: var(--neut-L50)
+  font-size: 15px
+
+// 卡片容器
+.status-cards
+  display: flex
+  flex-direction: column
+  gap: 16px
+  margin-bottom: 32px
+
+// 单条状态卡片
+.status-card
+  background: var(--card-background)
+  border-radius: card-radius
+  padding: 20px 24px
+  border: 1px solid var(--neut-L10)
+  transition: background trans-style, border-color trans-style
+
+  // 卡片顶部：服务名称 + 状态标签
+  &-header
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 16px
+    gap: 12px
+
+  &-name
+    font-size: 16px
+    font-weight: 600
+    color: var(--main-title)
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+
+  &-label
+    font-size: 12px
+    font-weight: 500
+    padding: 3px 10px
+    border-radius: 999px
+    white-space: nowrap
+    flex-shrink: 0
+
+    &--operational
+      background: alpha(#22c55e, 0.15)
+      color: #22c55e
+
+    &--degraded
+      background: alpha(#eab308, 0.15)
+      color: #eab308
+
+    &--down
+      background: alpha(#ef4444, 0.15)
+      color: #ef4444
+
+    &--unknown
+      background: var(--neut-L10)
+      color: var(--neut-L50)
+
+  // 24 条状态指示条
+  &-bars
+    display: flex
+    gap: 4px
+    height: 40px
+    align-items: flex-end
+
+  &-bar
+    flex: 1
+    min-width: 0
+    border-radius: 3px 3px 0 0
+    transition: background 0.3s ease, height 0.3s ease
+    position: relative
+
+    // 默认占位高度（灰色/未监控）
+    height: 8px
+    background: var(--neut-L10)
+
+    // 鼠标悬停显示时间信息
+    &:hover
+      .status-card-bar-tooltip
+        opacity: 1
+        transform: translateX(-50%) translateY(-4px)
+
+    &--operational
+      background: #22c55e
+      height: 100%
+
+    &--degraded
+      background: #eab308
+      height: 65%
+
+    &--down
+      background: #ef4444
+      height: 100%
+
+    &--unknown
+      background: var(--neut-L10)
+      height: 8px
+
+  // 工具提示
+  &-bar-tooltip
+    position: absolute
+    bottom: calc(100% + 8px)
+    left: 50%
+    transform: translateX(-50%)
+    background: var(--nav-dropdown-bg)
+    backdrop-filter: blur(8px)
+    color: var(--main-title)
+    font-size: 11px
+    padding: 4px 8px
+    border-radius: 4px
+    white-space: nowrap
+    pointer-events: none
+    opacity: 0
+    transition: opacity 0.15s ease, transform 0.15s ease
+    z-index: 10
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)
+
+    &::after
+      content: ''
+      position: absolute
+      top: 100%
+      left: 50%
+      transform: translateX(-50%)
+      border: 4px solid transparent
+      border-top-color: var(--nav-dropdown-bg)
+
+  // 底部额外信息
+  &-footer
+    margin-top: 12px
+    display: flex
+    justify-content: space-between
+    align-items: center
+    font-size: 12px
+    color: var(--neut-L50)
+    gap: 8px
+    flex-wrap: wrap
+
+  &-uptime
+    display: flex
+    align-items: center
+    gap: 4px
+
+// 卡片入场动画
+.status-card
+  animation: status-card-enter 0.4s ease-out both
+
+@keyframes status-card-enter
+  from
+    opacity: 0
+    transform: translateY(12px)
+  to
+    opacity: 1
+    transform: translateY(0)
+
+// 刷新按钮旋转动画
+.status-refresh-btn.loading
+  i
+    animation: status-spin 0.8s linear infinite
+
+@keyframes status-spin
+  from
+    transform: rotate(0deg)
+  to
+    transform: rotate(360deg)
+
+// 状态汇总数字加粗
+#status-operational-count,
+#status-degraded-count,
+#status-down-count
+  font-weight: 700
+
+#status-operational-count
+  color: #22c55e
+
+#status-degraded-count
+  color: #eab308
+
+#status-down-count
+  color: #ef4444
+
+// 移动端适配
+@media mq-mobile
+  .status-controls
+    flex-direction: column
+    align-items: flex-start
+
+  .status-summary
+    flex-wrap: wrap
+    gap: 10px
+
+  .status-card
+    padding: 16px
+
+    &-bars
+      height: 32px
+      gap: 3px
+
+    &-bar-tooltip
+      font-size: 10px
+
+    &-footer
+      flex-direction: column
+      align-items: flex-start

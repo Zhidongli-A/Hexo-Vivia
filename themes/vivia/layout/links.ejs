@@ -1,0 +1,94 @@
+<article id="page-<%= page.slug %>" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-inner">
+    <div class="article-main" style="width: 100%; margin-right: 0;">
+      <header class="article-header">
+        <%- partial('_partial/post/title', {post: page, index: false, class_name: 'p-name article-title'}) %>
+      </header>
+      <div class="e-content article-entry" itemprop="articleBody">
+
+        <!-- 友链卡片网格 -->
+        <div class="links-grid" id="links-container">
+          <!-- 友链数据将从 JSON 文件自动加载 -->
+        </div>
+
+        <%- page.content %>
+      </div>
+    </div>
+  </div>
+</article>
+
+<% if (theme.comment.giscus && theme.comment.giscus.enable) { %>
+  <div id="giscus-comment-card" class="giscus-comment-card">
+    <div class="main-title-bar">
+      <div class="main-title-dot"></div>
+      <div class="main-title"><%= __('comment') %> </div>
+    </div>
+    <div id="giscus-container"
+      data-repo="<%- theme.comment.giscus.repo %>"
+      data-repo-id="<%- theme.comment.giscus.repo_id %>"
+      data-category="<%- theme.comment.giscus.category %>"
+      data-category-id="<%- theme.comment.giscus.category_id %>"
+      data-mapping="<%- theme.comment.giscus.mapping %>"
+      data-strict="<%- theme.comment.giscus.strict %>"
+      data-reactions-enabled="<%- theme.comment.giscus.reactions_enabled %>"
+      data-emit-metadata="<%- theme.comment.giscus.emit_metadata %>"
+      data-input-position="<%- theme.comment.giscus.input_position %>"
+      data-lang="<%- theme.comment.giscus.lang %>"
+      data-loading="<%- theme.comment.giscus.loading %>">
+    </div>
+  </div>
+<% } %>
+
+<script>
+// 自动扫描并加载所有 JSON 友链文件
+(async function loadAllLinks() {
+  const container = document.getElementById('links-container');
+  const allLinks = [];
+
+  // 预定义的 JSON 文件列表（Hexo 会生成这些文件）
+  const jsonFiles = [
+    'links.json'
+  ];
+
+  // 加载所有 JSON 文件
+  for (const filename of jsonFiles) {
+    try {
+      const response = await fetch('/links/' + encodeURIComponent(filename));
+      if (response.ok) {
+        const data = await response.json();
+        // 支持两种格式：{links: [...]} 或单个对象 {...}
+        if (data.links && Array.isArray(data.links)) {
+          allLinks.push(...data.links);
+        } else if (data.name && data.url) {
+          // 单个友链对象格式
+          allLinks.push({
+            name: data.name,
+            url: data.url || data.link,
+            avatar: data.avatar,
+            desc: data.desc
+          });
+        }
+      }
+    } catch (e) {
+      console.log('跳过文件:', filename);
+    }
+  }
+
+  // 渲染友链卡片
+  if (allLinks.length) {
+    container.innerHTML = allLinks.map((link, index) => `
+      <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-card" style="--card-index: ${index}">
+        <div class="link-avatar-wrap">
+          <img src="${link.avatar}" alt="${link.name}" class="link-avatar" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="link-info">
+          <div class="link-name">${link.name}</div>
+          <div class="link-desc">${link.desc ? (link.desc.length > 10 ? link.desc.slice(0, 10) + '...' : link.desc) : ''}</div>
+        </div>
+      </a>
+    `).join('');
+  } else {
+    container.innerHTML = '<p style="color: var(--neut-L50);">暂无友链数据</p>';
+  }
+})();
+</script>

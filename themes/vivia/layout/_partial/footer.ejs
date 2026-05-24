@@ -1,5 +1,5 @@
 <footer id="footer">
-  <% if (theme.sidebar === 'bottom'){ %>
+  <% if ((typeof theme.sidebar === 'string' && theme.sidebar === 'bottom') || (theme.sidebar && theme.sidebar.position === 'bottom')){ %>
     <%- partial('_partial/sidebar') %>
   <% } %>
   <div id="footer-info" class="inner">

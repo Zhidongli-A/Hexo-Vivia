@@ -1,0 +1,67 @@
+/*
+ * Swup 动态页面切换过渡动画
+ */
+
+// 初次加载入场动画（仅执行一次）
+@keyframes swup-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 子元素逐个入场动画 (stagger)
+@keyframes swup-stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// 主内容容器过渡效果 — 加快
+.transition-main {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  transform-origin: top center;
+  animation: swup-entrance 0.2s ease;
+}
+
+// 子元素初始可见性控制（无 JS 降级）
+.transition-main > * {
+  opacity: 1;
+}
+
+// JS 启用时 → 子元素初始隐藏，等待 stagger
+html.js .transition-main > * {
+  opacity: 0;
+}
+
+// stagger 动画：由 JS 添加 stagger-ready 类后激活
+.transition-main.stagger-ready > * {
+  opacity: 0;
+  animation: swup-stagger-in 0.2s ease both;
+}
+
+// 动画进行中
+html.is-animating .transition-main {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+// 离开动画（可选）
+html.is-leaving .transition-main {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+// 动画结束时，防止闪烁
+html.is-animating.is-rendering .transition-main {
+  opacity: 0;
+}

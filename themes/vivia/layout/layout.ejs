@@ -5,7 +5,7 @@
 
   let hasBanner;
   if (theme.banner.enable && (is_home() || theme.banner.onAllPages)) {
-    if (is_post() && page.photos.length)
+    if (is_post() && page.photos && page.photos.length)
       hasBanner = "desktop";      // hide banner for mobile view if the post has cover image
     else
       hasBanner = "true"
@@ -22,6 +22,7 @@
 <script src="<%- url_for("/js/load-settings.js") %>" ></script>
 <%- partial('_partial/head') %>
 <body>
+  <script>document.documentElement.classList.add('js');</script>
   <% if (theme.previewMode) { %>
     <%- partial('_widget/color') %>
   <% } %>
@@ -36,7 +37,9 @@
       <%- partial('_partial/sidebar', null, {cache: !config.relative_link}) %>
     </div>
     <div id="content-body">
-      <%- body %>
+      <main id="swup" class="transition-main">
+        <%- body %>
+      </main>
     </div>
     <div id="footer-wrapper">
       <%- partial('_partial/footer', null, {cache: !config.relative_link}) %>
@@ -44,5 +47,9 @@
     <%- partial('_partial/back-to-top') %>
   </div>
   <script src="<%- url_for("/js/light-dark-switch.js") %>"></script>
+
+  <!-- Swup: 动态丝滑页面切换 -->
+  <script src="https://unpkg.com/swup@3"></script>
+  <script src="<%- url_for("/js/swup.js") %>"></script>
 </body>
 </html>

@@ -6,6 +6,9 @@
 
 global-reset()
 
+html
+  overflow-y: scroll    // 始终保留滚动条空间，防止页面切换时左右偏移
+
 a
   text-decoration: none
 
@@ -33,6 +36,7 @@ body
   background-size: 240px
   background-blend-mode: overlay    // TODO temporarily
   transition: background trans-style, color trans-style
+  scrollbar-gutter: stable
   &:before
     // TODO rotate the background
     // content: ''
@@ -139,12 +143,17 @@ body
 @import "_extend"
 @import "_partial/header"
 @import "_partial/article"
+@import "_partial/comment"
 @import "_partial/archive"
 @import "_partial/footer"
 @import "_partial/highlight"
 @import "_partial/back-to-top"
 @import "_partial/main-title"
 @import "_partial/settings"
+@import "_partial/links"
 
 if sidebar
   @import "_partial/sidebar"
+
+@import "_partial/status"
+@import "_partial/swup"

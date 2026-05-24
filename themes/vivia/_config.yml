@@ -3,6 +3,7 @@ menu:                      # 导航栏上的链接
   主页: /
   归档: /archives
   友链: /links
+  状态: /status
 rss: /atom.xml
 
 home:
@@ -13,7 +14,7 @@ favicon:                 # Favicon 文件路径，相对于 /source 目录（若
 # 横幅图片
 banner:
   enable: false                  # 是否显示横幅图片
-  url:                           # 横幅图片文件路径，相对于 /source 目录，也可填写网络图片 URL
+  url:                      # 横幅图片文件路径，相对于 /source 目录，也可填写网络图片 URL
   position: center               # 决定图片将如何被裁剪，对应 CSS 中的 "object-position" 属性
   onAllPages: true               # 在所有页面上显示横幅，而不是只在首页显示
 
@@ -53,8 +54,38 @@ recent_posts_limits: 5
 categories:
   max_depth:           # 分类组件中显示的最大目录深度 (留空为不限制)
 
-
-
+# 第三方评论系统
+comment:
+  valine:
+    enable: false
+    appId:
+    appKey:
+    placeholder: Just go go
+    pageSize: 10
+    highlight: true
+    serverURLs:
+  twikoo:
+    enable: false
+    envID:
+    region:
+    path: location.pathname
+    lang:
+  waline:
+    enable: false
+    serverURL:
+  giscus:
+    enable: true
+    repo: Zhidongli-A/Hexo-Vivia
+    repo_id: R_kgDORsIu_w
+    category: Announcements
+    category_id: DIC_kwDORsIu_84C9q_D
+    mapping: pathname
+    strict: 0
+    reactions_enabled: 1
+    emit_metadata: 0
+    input_position: top
+    lang: zh-CN
+    loading: lazy
 
 #Analytics
 gauges_analytics: false
