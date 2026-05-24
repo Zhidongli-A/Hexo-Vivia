@@ -61,6 +61,14 @@ html.is-leaving .transition-main {
   transform: translateY(-8px);
 }
 
+// 离开时暂停所有子元素动画/过渡，减轻复合层渲染压力
+html.is-leaving .transition-main,
+html.is-leaving .transition-main * {
+  animation-duration: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
 // 动画结束时，防止闪烁
 html.is-animating.is-rendering .transition-main {
   opacity: 0;

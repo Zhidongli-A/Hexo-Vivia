@@ -55,8 +55,8 @@
       reInitPageContent();
     });
 
-    // 初始加载：状态页数据获取（放 applyStagger 之前）
-    if (typeof fetchStatus === 'function' && document.getElementById('status-container')) {
+    // 初始加载：状态页数据获取（status.js 已在 layout.ejs 中全局加载）
+    if (document.getElementById('status-container')) {
       fetchStatus();
     }
 
@@ -76,23 +76,9 @@
     // 2. 重新执行文章内嵌的所有 <script> 标签
     reExecuteScripts();
 
-    // 2.5 在入场动画前主动获取状态数据，避免加载状态抖动
-    // 通过检查 #status-container 判断当前页面是否为状态页
-    // 使用重试机制：status.js 可能通过 reExecuteScripts 异步加载还未就绪
-    //（例如从主页跳转过来时，主页未加载 status.js，fetchStatus 尚未定义）
+    // 2.5 在入场动画前主动获取状态数据（status.js 已全局加载，无需 retry）
     if (document.getElementById('status-container')) {
-      if (typeof fetchStatus === 'function') {
-        fetchStatus();
-      } else {
-        var _statusRetry = setInterval(function() {
-          if (typeof fetchStatus === 'function') {
-            clearInterval(_statusRetry);
-            fetchStatus();
-          }
-        }, 50);
-        // 最长等待 3 秒，防止无限重试
-        setTimeout(function() { clearInterval(_statusRetry); }, 3000);
-      }
+      fetchStatus();
     }
 
     // 3. 子元素逐个入场 (stagger)

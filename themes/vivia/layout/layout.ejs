@@ -48,6 +48,9 @@
   </div>
   <script src="<%- url_for("/js/light-dark-switch.js") %>"></script>
 
+  <!-- 状态监控：全局加载一次，避免 Swup 切换时重复重载 -->
+  <script src="<%- url_for("/js/status.js") %>"></script>
+
   <!-- Swup: 动态丝滑页面切换 -->
   <script src="https://unpkg.com/swup@3"></script>
   <script src="<%- url_for("/js/swup.js") %>"></script>

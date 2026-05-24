@@ -102,11 +102,18 @@ async function fetchStatus() {
       headers: { 'Accept': 'application/json' }
     });
 
+    // 页面已切换，停止后续操作
+    if (!document.getElementById('status-container')) return;
+
     if (!response.ok) {
       throw new Error('HTTP ' + response.status + ': ' + response.statusText);
     }
 
     const data = await response.json();
+
+    // 页面已切换，停止后续渲染
+    if (!document.getElementById('status-container')) return;
+
     renderStatus(data);
 
   } catch (error) {
