@@ -70,25 +70,25 @@
    * 这些功能在 Swup 替换内容后需要重新执行
    */
   function reInitPageContent() {
-    // 1. 重新绑定文章图片点击放大 (fancybox)
-    initImageGallery();
-
-    // 2. 重新执行文章内嵌的所有 <script> 标签
-    reExecuteScripts();
-
-    // 2.5 在入场动画前主动获取状态数据（status.js 已全局加载，无需 retry）
-    if (document.getElementById('status-container')) {
-      fetchStatus();
-    }
-
-    // 3. 子元素逐个入场 (stagger)
+    // 1. 立即启动 stagger 入场动画，必须在当前帧生效
     applyStagger();
 
-    // 4. 初始化 Giscus 评论（通过 data-* 配置）
-    initGiscus();
+    // 2. 延迟非关键 DOM 操作到下一帧，
+    //    保证入口动画的首帧不被重 DOM 操作阻塞
+    requestAnimationFrame(function () {
+      initImageGallery();
+      reExecuteScripts();
 
-    // 5. 重新为代码块添加复制按钮等 (如果存在)
-    // (预留)
+      if (document.getElementById('status-container')) {
+        fetchStatus();
+      }
+
+      // 3. Giscus 加载外部脚本，再延迟一帧，
+      //    避免与容器内的图片/脚本处理争抢主线程
+      requestAnimationFrame(function () {
+        initGiscus();
+      });
+    });
   }
 
   /** 获取当前亮/暗主题 */
