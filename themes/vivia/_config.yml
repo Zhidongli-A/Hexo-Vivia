@@ -4,6 +4,7 @@ menu:                      # 导航栏上的链接
   归档: /archives
   友链: /links
   状态: /status
+  关于: /about
 rss: /atom.xml
 
 home:
