@@ -25,14 +25,14 @@ hue: 250                         # 主题色调 (例如：红: 0，橙: 60，蓝
 # 个人信息
 avatar: /OIP-C.webp
 author: 枝动力
-subtitle: 渺渺星海,唯我独芒!
+subtitle: 终究无意义。
 links:
   - name: Bilibili
     icon: fa-brands fa-bilibili
     url: https://space.bilibili.com/3546388008798309
   - name:   QQ
     icon: fa-brands fa-qq
-    url: tencent://message/?uin=3305162655&Site=&Menu=yes
+    url: tencent://message/?uin=3305162655
   - name: GitHub
     icon: fa-brands fa-github
     url: https://github.com/Zhidongli-A
