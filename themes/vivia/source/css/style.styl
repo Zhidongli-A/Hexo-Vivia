@@ -28,26 +28,35 @@ body, #container
   overflow-x: hidden
   height: 100%    // make sidebar's sticky work
 
+#bg-overlay
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  z-index: -2
+  background-size: cover
+  background-position: center
+  background-repeat: no-repeat
+  transition: background-image 1s ease
+
+#bg-dim
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  z-index: -1
+  background: rgba(0, 0, 0, 0.55)
+  backdrop-filter: blur(4px)
+  -webkit-backdrop-filter: blur(4px)
+
 body
   font: font-size font-sans
   -webkit-text-size-adjust: 100%
-  // background: url('../images/tile.png') var(--page-background)
-  background: var(--page-background)
-  background-size: 240px
-  background-blend-mode: overlay    // TODO temporarily
+  background: transparent
   transition: background trans-style, color trans-style
   scrollbar-gutter: stable
-  &:before
-    // TODO rotate the background
-    // content: ''
-    // position: absolute
-    // top: 0
-    // left: 0
-    // z-index: 10
-    // height: 100%
-    // width: 100%
-    // background-color: none
-    // rotate: 30deg
 
 @css {
   #main-grid {

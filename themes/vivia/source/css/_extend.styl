@@ -17,7 +17,9 @@ $block
 
 $card
   background: var(--card-background)
-  // filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.05))
+  backdrop-filter: blur(20px)
+  -webkit-backdrop-filter: blur(20px)
+  border: 1px solid rgba(255, 255, 255, 0.06)
   border-radius: card-radius
   transition: background trans-style
 

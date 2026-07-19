@@ -1,54 +1,149 @@
 <!DOCTYPE html>
-<% 
-  // hasBanner: if there is banner to display
-  // showBanner: if the site vistor choose to display banner
-
+<%
   let hasBanner;
   if (theme.banner.enable && (is_home() || theme.banner.onAllPages)) {
     if (is_post() && page.photos && page.photos.length)
-      hasBanner = "desktop";      // hide banner for mobile view if the post has cover image
+      hasBanner = "desktop";
     else
       hasBanner = "true"
   } else {
     hasBanner = "false";
   }
 %>
-<%  %>
-<html theme="dark" showBanner="true" hasBanner="<%- hasBanner %>" > 
+<html theme="dark" showBanner="<%- theme.banner.enable ? 'true' : 'false' %>" hasBanner="<%- hasBanner %>">
 <link href="https://cdn.staticfile.org/font-awesome/6.4.2/css/fontawesome.min.css" rel="stylesheet">
 <link href="https://cdn.staticfile.org/font-awesome/6.4.2/css/brands.min.css" rel="stylesheet">
 <link href="https://cdn.staticfile.org/font-awesome/6.4.2/css/solid.min.css" rel="stylesheet">
 <script src="<%- url_for("/js/color.global.min.js") %>" ></script>
 <script src="<%- url_for("/js/load-settings.js") %>" ></script>
 <%- partial('_partial/head') %>
+
+<style>
+  /* ── 背景容器 ── */
+  #bg-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -2; background-size: cover; background-position: center; background-repeat: no-repeat; }
+  #bg-dim { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; background: rgba(0,0,0,0.55); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+
+  /* ── 加载动画 ── */
+  #loading-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    background: #0d0d12;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+  }
+  #loading-screen.hide {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .loading-spinner {
+    width: 24px; height: 24px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #4a8eff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── 入场动画（背景加载后触发） ── */
+  .entrance-el {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .bg-loaded .entrance-el {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  #nav            { transition-delay: 0.05s; }
+  #sidebar-wrapper { transition-delay: 0.20s; }
+  #content-body   { transition-delay: 0.35s; }
+  #footer-wrapper { transition-delay: 0.50s; }
+</style>
+
 <body>
+  <!-- 加载屏幕 -->
+  <div id="loading-screen">
+    <div class="loading-spinner"></div>
+    <span class="loading-text">&#36164;&#28304;&#21152;&#36733;&#20013;</span>
+  </div>
+
+  <!-- 背景 -->
+  <div id="bg-overlay"></div>
+  <div id="bg-dim"></div>
+
+  <script>
+  // 等背景图完全加载 → 隐藏加载屏 + 入场动画
+  (function() {
+    var cacheBuster = Date.now();
+    var bgUrl = 'https://api.elaina.cat/random/?' + cacheBuster;
+    var img = new Image();
+    var root = document.documentElement;
+    var loading = document.getElementById('loading-screen');
+
+    function showContent() {
+      root.classList.add('bg-loaded');
+      loading.classList.add('hide');
+    }
+
+    img.onload = function() {
+      // 同一 URL 预加载完成，设为背景（浏览器直接用缓存）
+      document.getElementById('bg-overlay').style.backgroundImage = 'url(' + bgUrl + ')';
+      // 双 rAF 确保浏览器已绘制背景再展示内容
+      requestAnimationFrame(function() {
+        requestAnimationFrame(showContent);
+      });
+    };
+    img.onerror = function() {
+      document.getElementById('bg-overlay').style.background = '#1a1a2e';
+      showContent();
+    };
+    img.src = bgUrl;
+  })();
+  </script>
+
   <script>document.documentElement.classList.add('js');</script>
+
   <% if (theme.previewMode) { %>
     <%- partial('_widget/color') %>
   <% } %>
-  <% if (hasBanner != "false") { %>
-    <%- partial('_partial/banner') %> 
-  <% } %> 
-  <div id="main-grid" class="<% if (theme.sidebar.position == "right") { %> right-sidebar <% } %>  ">
-    <div id="nav" class="<% if (is_home()) { %> is_home <% } %>"  >
+  <% if (hasBanner != "false" && theme.banner.enable) { %>
+    <%- partial('_partial/banner') %>
+  <% } %>
+
+  <div id="main-grid" class="<% if (theme.sidebar.position == "right") { %> right-sidebar <% } %>">
+    <div id="nav" class="entrance-el <% if (is_home()) { %> is_home <% } %>">
       <%- partial('_partial/navbar', null, {cache: !config.relative_link}) %>
     </div>
-    <div id="sidebar-wrapper">
+    <div id="sidebar-wrapper" class="entrance-el">
       <%- partial('_partial/sidebar', null, {cache: !config.relative_link}) %>
     </div>
-    <div id="content-body">
+    <div id="content-body" class="entrance-el">
       <main id="swup" class="transition-main">
         <%- body %>
       </main>
     </div>
-    <div id="footer-wrapper">
+    <div id="footer-wrapper" class="entrance-el">
       <%- partial('_partial/footer', null, {cache: !config.relative_link}) %>
     </div>
     <%- partial('_partial/back-to-top') %>
   </div>
-  <script src="<%- url_for("/js/light-dark-switch.js") %>"></script>
 
-  <!-- 状态监控：全局加载一次，避免 Swup 切换时重复重载 -->
+  <!-- 状态监控 -->
   <script src="<%- url_for("/js/status.js") %>"></script>
 
   <!-- Swup: 动态丝滑页面切换 -->

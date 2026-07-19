@@ -137,18 +137,6 @@ $nav-link
       display: none
     @media mq-tablet
       display: none
-  .rss
-    font-weight: 300
-  .light-mode-icon
-    position: absolute
-    height: 20px
-    opacity: var(--display-light-icon)
-    transition: opacity trans-style
-  .dark-mode-icon
-    position: absolute
-    height: 20px
-    opacity: var(--display-dark-icon)
-    transition: opacity trans-style
 
 #nav-menu-btn
   @media mq-normal
@@ -156,7 +144,11 @@ $nav-link
 
 #nav-dropdown
   margin-top: - card-radius
-  background: var(--nav-dropdown-bg)
+  background: var(--card-background)
+  backdrop-filter: blur(20px)
+  -webkit-backdrop-filter: blur(20px)
+  border: 1px solid rgba(255, 255, 255, 0.06)
+  border-top: none
   transition: background trans-style, height trans-style
   border-radius: 0 0 card-radius card-radius
   overflow: hidden

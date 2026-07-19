@@ -8,7 +8,7 @@ layout: page
 ### Skills
 
 *   **编程语言**：JavaScript(并非专业), Python, C++(仍在学习), Html(并非专业) , Css, MarkDown
-*   **虚拟歌姬引擎**: X Studio, Ace Studio(仍在学习)
+*   **虚拟歌姬引擎**: X Studio, Ace Studio(仍在学习), Synthesizer V Studio 2 Pro
 
 ### Projects
 

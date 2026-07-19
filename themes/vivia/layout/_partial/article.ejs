@@ -5,7 +5,7 @@
   <% if (is_post() || theme.home.style == 'detail') { %>
     <%- partial('post/gallery') %>
   <% } %> 
-  <div class="article-inner">
+  <div class="article-inner<% if (is_home() && theme.home.style != 'detail') { %> has-right-panel<% } %>">
     <div class="article-main">
       <header class="article-header">
         <%- partial('post/title', {class_name: 'p-name article-title'}) %>

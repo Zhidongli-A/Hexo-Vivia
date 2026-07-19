@@ -85,8 +85,8 @@ mq-normal = "screen and (min-width: 1024px)"
 // Colors
 color-N90 = alpha(white, 0.9)
 color-N75 = alpha(white, 0.75)
-color-N50 = alpha(white, 0.5) 
-color-N30 = alpha(white, 0.3) 
+color-N50 = alpha(white, 0.5)
+color-N30 = alpha(white, 0.3)
 color-N10 = alpha(white, 0.1)
 
 color-B90 = alpha(black, 0.9)
@@ -94,6 +94,9 @@ color-B75 = alpha(black, 0.75)
 color-B50 = alpha(black, 0.5)
 color-B30 = alpha(black, 0.3)
 color-B10 = alpha(black, 0.1)
+
+// ── 暗色玻璃主题（中性灰底，无蓝色调）────────
+// 背景用 rgba 半透明，前景文字用 OKLCH 纯白/浅灰
 
 :root
 
@@ -103,168 +106,86 @@ color-B10 = alpha(black, 0.1)
   --neut-L30: color-N30
   --neut-L10: color-N10
 
-  --banner-dim: alpha(#000, 0.2)
+  --banner-dim: alpha(#000, 0.3)
 
   --primary-hue: get-config-or-default("hue", 0)
 
-  // Component Color
+  // 背景色系 — rgba 半透明中性灰
+  --page-background: rgba(10, 10, 14, 0.15)
+  --card-background: rgba(28, 28, 34, 0.35)
+  --nav-dropdown-bg: rgba(28, 28, 34, 0.50)
+  --btn-bg: rgba(50, 50, 58, 0.25)
+  --btn-hover: rgba(60, 60, 68, 0.35)
+  --btn-active: rgba(65, 65, 74, 0.40)
+  --card-btn-hover: rgba(40, 40, 48, 0.30)
+  --card-btn-active: rgba(45, 45, 52, 0.35)
+  --btn-text-hover: rgba(255, 255, 255, 0.08)
+  --btn-text-active: rgba(255, 255, 255, 0.05)
+  --link-hover-bg: rgba(255, 255, 255, 0.10)
+  --link-active-bg: rgba(255, 255, 255, 0.08)
+  --tag-dot: rgba(255, 255, 255, 0.20)
+  --article-code-bg: rgba(50, 50, 58, 0.30)
+  --article-block: rgba(0, 0, 0, 0.25)
+  --blockquote-bg: rgba(0, 0, 0, 0.25)
+  --color-picker-range: rgba(255, 255, 255, 0.15)
+  --badge-bg: rgba(180, 180, 200, 0.15)
+  --text-on-light: rgba(0, 0, 0, 0.20)
+  --pagenav-curr-text: rgba(0, 0, 0, 0.25)
+  --input-field: rgba(0, 0, 0, 0.25)
+  --primary-btn-text: rgba(0, 0, 0, 0.25)
+  --enter-btn-bg: rgba(0, 0, 0, 0.25)
+  --enter-btn-hover: rgba(255, 255, 255, 0.08)
+  --enter-btn-active: rgba(255, 255, 255, 0.12)
+  --selection-bg: rgba(255, 255, 255, 0.12)
+  --code-block-selection-bg: rgba(255, 255, 255, 0.12)
+  --timeline-dim-dot: rgba(255, 255, 255, 0.25)
+  --archive-dashline: rgba(255, 255, 255, 0.08)
+
+  // 前景色系 — OKLCH 纯白/浅灰
   _color_set({
     --primary: 0.75 0.14
 
-    --nav-dropdown-bg: 0.20 0.02
+    --main-title: 0.96 0.01
 
-    --page-background: 0.16 0.014
-    --card-background: 0.25 0.02
-
-    --main-title: color-N90
-
-    --btn-bg: 0.38 0.04
-    --btn-content: --neut-L75
-    --btn-hover: 0.45 0.045
-    --btn-active: 0.50 0.05
+    --btn-content: 0.85 0.02
     --btn-content-hover: --btn-content
 
-    --card-btn-bg: --card-background
-    --card-btn-hover: 0.30 0.03
-    --card-btn-active: 0.35 0.035
     --card-btn-icon: --primary
 
-    --btn-text-hover: 0.20 0.02
-    --btn-text-active: 0.17 0.017
-    --btn-text-neutral-text: --neut-L75
+    --btn-text-neutral-text: 0.82 0.02
     --btn-text-content: --primary
     --btn-text-light-text: --primary
-
-    --timeline-dim-dot: 0.50 0.05
 
     --title-hover: --primary
     --title-active: 0.65 0.12
 
     --light-dot: --primary
 
-    --tag-dot: 0.25 0.02
+    --article-meta: 0.72 0.01
+    --article-text: 0.85 0.01
 
-    --article-meta: color-N50
-    --article-text: color-N75
-
-    --info-name: color-N90
-    --info-sub: color-N50
+    --info-name: 0.96 0.01
+    --info-sub: 0.72 0.01
 
     --highlight-selection: 0.35 0.035
-    --article-code-bg: 0.40 0.04
-    --article-block: 0.20 0.02
     --link: --primary
-    --link-hover-bg: 0.40 0.08
-    --link-active-bg: 0.35 0.07
-    --blockquote-bg: 0.20 0.02
 
     --color-picker-border: --primary
     --color-picker-thumb: --primary
-    --color-picker-range: 0.40 0.04
-
-    --badge-bg: 0.75 0.12
-    --text-on-light: 0.25 0.02
 
     --pagenav-curr-bg: --primary
-    --pagenav-curr-text: 0.25 0.02
 
     --widget-title: --main-title
 
-    --archive-year: --neut-L75
-    --archive-date: --neut-L50
-    --archive-title: --neut-L75
-    --archive-tags: --neut-L30
-    --archive-dashline: --neut-L10
-
-    --input-field: 0.20 0.02
+    --archive-year: 0.85 0.02
+    --archive-date: 0.68 0.01
+    --archive-title: 0.85 0.02
+    --archive-tags: 0.55 0.01
 
     --primary-btn-bg: --primary
-    --primary-btn-text: 0.25 0.02
 
-    --enter-btn-bg: 0.20 0.02
-    --enter-btn-hover: 0.30 0.03
-    --enter-btn-active: 0.35 0.035
-
-    --selection-bg: 0.40 0.08
-    --code-block-selection-bg: 0.40 0.08
-
-    --img-overlay: rgba(black, 0.1)
+    --img-overlay: rgba(black, 0.15)
   })
 
   // Layout Setting
   --sidebar-width: sidebar-width
-
-  // light/dark mode icon
-  --display-light-icon: 0
-  --display-dark-icon: 1
-
-:root[theme='light']
-  --card-background: white
-
-  --banner-dim: none
-
-  --neut-L90: color-B90
-  --neut-L75: color-B75
-  --neut-L50: color-B50
-  --neut-L30: color-B30
-  --neut-L10: color-B10
-
-  _color_set({
-    --primary: 0.70 0.14
-    --main-title: color-B90
-
-    --page-background: 0.95 0.01
-
-    --nav-dropdown-bg: 0.98 0.005
-
-    --article-meta: color-B50
-    --article-text: color-B75
-
-    --btn-bg: 0.95 0.025
-    --btn-content: 0.55 0.12
-    --btn-hover: 0.90 0.05
-    --btn-active: 0.85 0.08
-
-    --btn-text-hover: 0.95 0.025
-    --btn-text-active: 0.98 0.01
-    --btn-text-neutral-text: color-B75
-    --btn-text-content: 0.70 0.14
-
-    --info-name: color-B90
-    --info-sub: color-B50
-
-    --card-btn-hover: 0.98 0.005
-    --card-btn-active: 0.90 0.03
-
-    --title-active: 0.60 0.12
-
-    --link-hover-bg: 0.95 0.025
-    --link-active-bg: 0.90 0.05
-
-    --tag-dot: --btn-content
-
-    --article-code-bg: 0.95 0.02
-    --blockquote-bg: 0.98 0.005
-
-    --badge-bg: 0.95 0.02
-    --text-on-light: 0.55 0.12
-
-
-    --color-picker-range: 0.95 0.02
-
-    --input-field: 0.98 0.005
-
-    --enter-btn-bg: 0.98 0.005
-    --enter-btn-hover: 0.96 0.015
-    --enter-btn-active: 0.90 0.03
-    --img-overlay: rgba(black, 0)
-
-    --pagenav-curr-text: color-N90
-
-    --primary-btn-text: color-N90
-
-    --selection-bg: 0.90 0.05
-  })
-
-  --display-light-icon: 1
-  --display-dark-icon: 0

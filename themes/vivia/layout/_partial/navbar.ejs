@@ -16,12 +16,8 @@
     <% } %>
   </nav>
   <nav id="sub-nav">
-    <a id="theme-btn" class="nav-icon">
-      <span class="light-mode-icon"><%- partial('_icon/wb_sunny') %></span>
-      <span class="dark-mode-icon"><%- partial('_icon/dark_mode') %></span>
-    </a>
     <% if (theme.umami_stats_url){ %>
-      <a id="nav-stats-link" class="nav-icon mobile-show" href="<%- theme.umami_stats_url %>" target="_blank" title="统计">
+      <a id="nav-stats-link" class="nav-icon" href="<%- theme.umami_stats_url %>" target="_blank" title="&#32479;&#35745;">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z" fill="currentColor"/></svg>
       </a>
     <% } %>

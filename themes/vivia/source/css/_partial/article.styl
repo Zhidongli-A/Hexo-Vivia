@@ -12,10 +12,15 @@
   z-index: 50
   position: relative
   background: var(--card-background)
+  backdrop-filter: blur(20px)
+  -webkit-backdrop-filter: blur(20px)
   transition: background trans-style
   width: 100%
-  margin-right: -16px
+  margin-right: 0
   padding-bottom: 16px
+
+.has-right-panel .article-main
+  border-radius: card-radius 0 0 card-radius
 
 .article-meta
   clearfix()
@@ -84,6 +89,7 @@
   background-size: cover
   background-position: center center
   background-repeat: no-repeat
+  border-radius: 0 card-radius card-radius 0
   transition: all trans-style;
   @media mq-mobile
     display: none
