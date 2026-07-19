@@ -5,7 +5,8 @@ menu:                      # 导航栏上的链接
   友链: /links
   状态: /status
   关于: /about
-rss: /atom.xml
+rss: false
+umami_stats_url: https://cloud.umami.is/share/IbtRxAKWUAPTHoEr
 
 home:
   style: default           # default, detail

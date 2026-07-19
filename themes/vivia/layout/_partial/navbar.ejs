@@ -20,9 +20,9 @@
       <span class="light-mode-icon"><%- partial('_icon/wb_sunny') %></span>
       <span class="dark-mode-icon"><%- partial('_icon/dark_mode') %></span>
     </a>
-    <% if (theme.rss){ %>
-      <a id="nav-rss-link" class="nav-icon mobile-hide" href="<%- url_for(theme.rss) %>" title="<%= __('rss_feed') %>">
-        <%- partial('_icon/rss_feed') %>
+    <% if (theme.umami_stats_url){ %>
+      <a id="nav-stats-link" class="nav-icon mobile-show" href="<%- theme.umami_stats_url %>" target="_blank" title="统计">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20"><path d="M120-120v-80l80-80v160h-80Zm160 0v-240l80-80v320h-80Zm160 0v-320l80 81v239h-80Zm160 0v-239l80-80v319h-80Zm160 0v-400l80-80v480h-80ZM120-327v-113l280-280 160 160 280-280v113L560-447 400-607 120-327Z" fill="currentColor"/></svg>
       </a>
     <% } %>
     <div id="nav-menu-btn" class="nav-icon">
@@ -35,9 +35,6 @@
     <% for (var i in theme.menu){ %>
       <a class="nav-dropdown-link" href="<%- url_for(theme.menu[i]) %>"><%= i %></a>
     <% } %>
-    <% if (theme.rss) { %>
-      <a class="nav-dropdown-link" href="<%- url_for(theme.rss) %>" title="<%= __('rss_feed') %>">RSS</a>
-    <% } %> 
     </div>
 </div>
 <script>
