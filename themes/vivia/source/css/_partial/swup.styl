@@ -27,10 +27,10 @@
 }
 
 // 主内容容器过渡效果 — 加快
+// 由 Swup 的 is-animating / is-leaving 类触发过渡，与 stagger 入场动画配合
 .transition-main {
   transition: opacity 0.2s ease, transform 0.2s ease;
   transform-origin: top center;
-  animation: swup-entrance 0.2s ease;
 }
 
 // 子元素初始可见性控制（无 JS 降级）
@@ -62,7 +62,6 @@ html.is-leaving .transition-main {
 }
 
 // 离开时暂停所有子元素动画/过渡，减轻复合层渲染压力
-html.is-leaving .transition-main,
 html.is-leaving .transition-main * {
   animation-duration: 0s !important;
   transition-duration: 0s !important;

@@ -32,7 +32,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
     background: #0d0d12;
     transition: opacity 0.6s ease, visibility 0.6s ease;
   }
@@ -42,20 +41,88 @@
     pointer-events: none;
   }
 
-  .loading-spinner {
-    width: 24px; height: 24px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #4a8eff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  /* 加载卡片 — 宽度由内容决定 */
+  .loading-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    max-width: 90vw;
+  }
+
+  /* 头部：头像 + 文字 */
+  .loading-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .loading-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    object-fit: cover;
     flex-shrink: 0;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-texts {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .loading-title {
+    font-size: 20px;
+    color: #ffffff;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .loading-subtitle {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.45);
+    line-height: 1.4;
+    white-space: nowrap;
+  }
 
-  .loading-text {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
-    letter-spacing: 0.5px;
+  /* Windows 风格 indeterminate 加载条 */
+  .loading-track {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .loading-thumb {
+    width: 35%;
+    height: 100%;
+    background: #4a8eff;
+    border-radius: 3px;
+    animation: windows-indeterminate 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  @keyframes windows-indeterminate {
+    0%   { transform: translateX(-100%); }
+    50%  { transform: translateX(400%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  /* 错误提示（默认隐藏） */
+  .loading-error {
+    display: none;
+    width: 100%;
+    padding: 10px 16px;
+    background: rgba(255, 140, 155, 0.12);
+    border: 1px solid rgba(255, 140, 155, 0.25);
+    border-radius: 8px;
+    color: #ffb7c5;
+    font-size: 16px;
+    line-height: 1.5;
+    text-align: center;
+    box-sizing: border-box;
+  }
+
+  /* 出错时：隐藏加载条，显示错误 */
+  #loading-screen.error .loading-track {
+    display: none;
+  }
+  #loading-screen.error .loading-error {
+    display: block;
   }
 
   /* ── 入场动画（背景加载后触发） ── */
@@ -78,8 +145,17 @@
 <body>
   <!-- 加载屏幕 -->
   <div id="loading-screen">
-    <div class="loading-spinner"></div>
-    <span class="loading-text">&#36164;&#28304;&#21152;&#36733;&#20013;</span>
+    <div class="loading-card">
+      <div class="loading-header">
+        <img class="loading-avatar" src="<%- url_for(theme.avatar) %>" alt="avatar" onerror="this.style.display='none'">
+        <div class="loading-texts">
+          <div class="loading-title">枝动力の小站</div>
+          <div class="loading-subtitle">资源正在加载呢~</div>
+        </div>
+      </div>
+      <div class="loading-track"><div class="loading-thumb"></div></div>
+      <div class="loading-error">不好意思!出现了意外~</div>
+    </div>
   </div>
 
   <!-- 背景 -->
@@ -89,15 +165,20 @@
   <script>
   // 等背景图完全加载 → 隐藏加载屏 + 入场动画
   (function() {
+    var html = document.documentElement;
     var cacheBuster = Date.now();
     var bgUrl = 'https://api.elaina.cat/random/?' + cacheBuster;
     var img = new Image();
-    var root = document.documentElement;
     var loading = document.getElementById('loading-screen');
 
+    // 加载中禁止浏览器滚动条
+    html.style.overflow = 'hidden';
+
     function showContent() {
-      root.classList.add('bg-loaded');
+      html.classList.add('bg-loaded');
       loading.classList.add('hide');
+      // 恢复滚动
+      html.style.overflow = '';
     }
 
     img.onload = function() {
@@ -110,7 +191,14 @@
     };
     img.onerror = function() {
       document.getElementById('bg-overlay').style.background = '#1a1a2e';
-      showContent();
+      // 显示错误状态：隐藏加载条，显示樱花粉错误提示
+      loading.classList.add('error');
+      // 5秒后自动隐藏加载屏，让用户能看到页面内容
+      setTimeout(function() {
+        if (!loading.classList.contains('hide')) {
+          showContent();
+        }
+      }, 5000);
     };
     img.src = bgUrl;
   })();
