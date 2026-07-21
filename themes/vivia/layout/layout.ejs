@@ -191,14 +191,8 @@
     };
     img.onerror = function() {
       document.getElementById('bg-overlay').style.background = '#1a1a2e';
-      // 显示错误状态：隐藏加载条，显示樱花粉错误提示
+      // 显示错误状态：隐藏加载条，显示错误提示，停留在此页面直到用户刷新
       loading.classList.add('error');
-      // 5秒后自动隐藏加载屏，让用户能看到页面内容
-      setTimeout(function() {
-        if (!loading.classList.contains('hide')) {
-          showContent();
-        }
-      }, 5000);
     };
     img.src = bgUrl;
   })();
