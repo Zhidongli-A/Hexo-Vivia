@@ -62,8 +62,7 @@ time_format: HH:mm:ss
 updated_option: mtime
 per_page: 10
 pagination_dir: page
-include:
-  - _redirects
+include: null
 exclude: null
 ignore: null
 theme: vivia
