@@ -1,6 +1,26 @@
 <head>
   <meta charset="utf-8">
   <%- partial('google-analytics') %>
+  <!-- Meta description -->
+  <% if (page.description){ %>
+    <meta name="description" content="<%= page.description.slice(0, 200) %>">
+  <% } else if (page.excerpt){ %>
+    <meta name="description" content="<%= strip_html(page.excerpt).slice(0, 160) %>">
+  <% } else { %>
+    <meta name="description" content="<%= config.description %>">
+  <% } %>
+  <!-- Meta keywords -->
+  <% if (page.tags && page.tags.length){ %>
+    <meta name="keywords" content="<%= page.tags.map(t => t.name).join(', ') %>">
+  <% } else if (config.keywords){ %>
+    <meta name="keywords" content="<%= config.keywords.join(', ') %>">
+  <% } %>
+  <!-- Canonical -->
+  <link rel="canonical" href="<%= page.permalink || config.url %>">
+  <!-- Noindex -->
+  <% if (page.noindex) { %>
+    <meta name="robots" content="noindex, nofollow">
+  <% } %>
   <%- partial('baidu-analytics') %>
   <%- partial('gauges-analytics') %>
   <%
@@ -27,6 +47,38 @@
   <link rel="preload" href="<%- url_for("/css/fonts/Roboto-Bold.ttf") %>" as="font" type="font/ttf" crossorigin="anonymous">
 
   <%- open_graph({twitter_id: theme.twitter, fb_admins: theme.fb_admins, fb_app_id: theme.fb_app_id}) %>
+  <!-- JSON-LD Structured Data -->
+  <% if (is_post()) { %>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "<%= page.title %>",
+      "description": "<%= page.description ? page.description.slice(0, 200).replace(/"/g, '\\"') : '' %>",
+      "author": { "@type": "Person", "name": "<%= config.author %>" },
+      "datePublished": "<%= page.date.toISOString() %>",
+      "dateModified": "<%= page.updated.toISOString() %>",
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "<%= page.permalink %>" }
+    }
+    </script>
+  <% } else if (!is_home()) { %>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "首页",
+        "item": "<%= config.url %>"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "<%= page.title || page.category || page.tag || '' %>"
+      }]
+    }
+    </script>
+  <% } %>
   <% if (theme.favicon){ %>
     <%- favicon_tag(theme.favicon) %>
   <% } else { %>
