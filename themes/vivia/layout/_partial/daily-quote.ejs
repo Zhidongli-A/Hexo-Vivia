@@ -1,0 +1,78 @@
+<div class="daily-quote-card">
+  <div class="daily-quote-card-header">
+    <span class="daily-quote-card-title">每日一言</span>
+    <div class="daily-quote-card-actions">
+      <button class="daily-quote-btn daily-quote-copy-btn" title="复制">
+        <i class="fa-solid fa-copy"></i> 复制
+      </button>
+      <button class="daily-quote-btn daily-quote-refresh-btn" title="刷新">
+        <i class="fa-solid fa-rotate"></i> 刷新
+      </button>
+    </div>
+  </div>
+  <div class="daily-quote-content">
+    <div class="daily-quote-loading"></div>
+    <div class="daily-quote-sentence"></div>
+    <div class="daily-quote-source"></div>
+  </div>
+</div>
+
+<script>
+(function() {
+  var cards = document.querySelectorAll('.daily-quote-card');
+  cards.forEach(function(card) {
+    var sentenceEl = card.querySelector('.daily-quote-sentence');
+    var sourceEl = card.querySelector('.daily-quote-source');
+    var loadingEl = card.querySelector('.daily-quote-loading');
+    var copyBtn = card.querySelector('.daily-quote-copy-btn');
+    var refreshBtn = card.querySelector('.daily-quote-refresh-btn');
+
+    function fetchQuote() {
+      loadingEl.style.display = 'block';
+      sentenceEl.style.display = 'none';
+      sourceEl.style.display = 'none';
+      refreshBtn.classList.add('loading');
+
+      fetch('https://hi.logacg.com/?z=15')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          var sentence = data.hitokoto || '';
+          var source = data.from || '';
+          sentenceEl.textContent = '「' + sentence + '」';
+          sourceEl.textContent = source ? '—— ' + source : '';
+          loadingEl.style.display = 'none';
+          sentenceEl.style.display = 'block';
+          sourceEl.style.display = source ? 'block' : 'none';
+        })
+        .catch(function() {})
+        .finally(function() {
+          refreshBtn.classList.remove('loading');
+        });
+    }
+
+    copyBtn.addEventListener('click', function() {
+      var text = sentenceEl.textContent.replace(/[「」]/g, '');
+      if (sourceEl.textContent) {
+        text += ' ' + sourceEl.textContent;
+      }
+      var origHtml = copyBtn.innerHTML;
+      navigator.clipboard.writeText(text).then(function() {
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
+        setTimeout(function() { copyBtn.innerHTML = origHtml; }, 2000);
+      }).catch(function() {
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> 已复制';
+        setTimeout(function() { copyBtn.innerHTML = origHtml; }, 2000);
+      });
+    });
+
+    refreshBtn.addEventListener('click', fetchQuote);
+    fetchQuote();
+  });
+})();
+</script>

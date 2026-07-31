@@ -12,8 +12,8 @@ layout: page
 
 ### Projects
 
-*  [Hexo-Vivia](https://zhidongli.top)：基于 Hexo 框架搭建的个人技术博客，记录开发心得与教程。
-*   **Windows_Control**：通过 QQ Bot 指令实现 Windows 系统的基础远程操作。
-*   **SkoHit-Music**：基于 Meting API 和 JavaScript 开发的轻量级在线音乐播放器。
-*   **Free_BaiduAi_Imaging**：利用浏览器自动化封装的百度 AI 绘图接口，降低使用门槛。
+*   **Hexo-Vivia**：基于 Hexo 框架搭建的个人技术博客，记录开发心得与教程。
+*   **[Windows_Control](https://github.com/Zhidongli-A/astrbot_plugin_windows_Control)**：通过 QQ Bot 指令实现 Windows 系统的基础远程操作。
+*   **[SkoHit-Music](https://github.com/Zhidongli-A/SkoHit-Music)**：基于 Meting API 和 JavaScript 开发的轻量级在线音乐播放器。
+*   **[Free_BaiduAi_Imaging](https://github.com/Zhidongli-A/Free_BaiduAi_Imaging)**：利用浏览器自动化封装的百度 AI 绘图接口，降低使用门槛。
 

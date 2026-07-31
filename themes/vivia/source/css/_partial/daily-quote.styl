@@ -1,0 +1,70 @@
+/*
+ * Daily Quote 每日一言
+ * 独立卡片样式，类似状态页面的服务卡片
+ */
+
+.daily-quote-card
+  background: var(--card-background)
+  border-radius: card-radius
+  padding: 20px 24px
+  border: 1px solid var(--neut-L10)
+  transition: background trans-style, border-color trans-style
+  animation: status-card-enter 0.4s ease-out both
+  margin-bottom: 16px
+
+  // 卡片顶部：标题 + 操作按钮
+  &-header
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 16px
+    gap: 12px
+
+  &-title
+    font-size: 16px
+    font-weight: 600
+    color: var(--main-title)
+
+  &-actions
+    display: flex
+    gap: 12px
+
+.daily-quote-loading
+  color: var(--neut-L50)
+  font-size: 14px
+  text-align: center
+  padding: 16px 0
+
+.daily-quote-sentence
+  font-size: 16px
+  line-height: 1.8
+  color: var(--main-title)
+  letter-spacing: 0.5px
+
+.daily-quote-source
+  font-size: 13px
+  color: var(--neut-L50)
+  text-align: right
+  margin-top: 8px
+
+.daily-quote-btn
+  @extend $text-btn
+  display: inline-flex !important
+  gap: 6px
+  font-size: 14px
+
+  i
+    font-size: 13px
+
+  &.loading i
+    animation: status-spin 0.8s linear infinite
+
+@media mq-mobile
+  .daily-quote-card
+    padding: 16px
+
+  .daily-quote-sentence
+    font-size: 15px
+
+  .daily-quote-actions
+    gap: 8px

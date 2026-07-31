@@ -34,6 +34,9 @@
         <% } else { %>
           <%- post.content %>
         <% } %>
+        <% if (post.source && post.source.indexOf('about') >= 0) { %>
+          <%- partial('daily-quote') %>
+        <% } %>
       </div>
 
       <% if (theme.home.style == 'detail') { %> 
