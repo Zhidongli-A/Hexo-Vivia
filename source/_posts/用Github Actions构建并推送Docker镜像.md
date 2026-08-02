@@ -3,7 +3,7 @@ layout: post
 title: 用Github Actions构建并推送Docker镜像
 date: 2026-08-02 14:30:00
 categories: 傻瓜教程
-description: 让你的GitHub项目一push代码，便自动构建多架构Docker镜像并发布到Docker Hub，全程无需人工干预。
+description: 让你的GitHub项目一推送代码，便自动构建多架构Docker镜像并发布到Docker Hub，全程无需人工干预。
 ---
 >危险:本期教程并非新手向教程，适合有一定项目开发基础的读者。
 
