@@ -27,6 +27,11 @@ hue: 250                         # 主题色调 (例如：红: 0，橙: 60，蓝
 avatar: /Photo.jpg
 author: 枝动力
 subtitle: 终究无意义。
+
+# 加载页
+loading:
+  title: 枝动力の小站
+  subtitle: 少女祈祷中~
 links:
   - name: Bilibili
     icon: fa-brands fa-bilibili
