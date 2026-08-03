@@ -54,14 +54,26 @@
   justify-content: center
   gap: 12px
   #num-bar
-    @extend $card
-    border-radius: inner-radius
-    background: var(--card-btn-bg)
-    font-weight: bold
     display: flex
-    .current
-      background: var(--pagenav-curr-bg)
-      color: var(--pagenav-curr-text)
+    gap: 8px
+    .page-number
+      @extend $card
+      min-width: 40px
+      height: 40px
+      padding: 0 12px
+      border-radius: inner-radius
+      background: var(--card-btn-bg)
+      font-weight: bold
+      display: flex
+      justify-content: center
+      align-items: center
+      color: color-grey
+      text-decoration: none
+      &:hover
+        background: var(--card-btn-hover)
+      &.current
+        background: var(--pagenav-curr-bg)
+        color: var(--pagenav-curr-text)
   .page-nav-btn
     @extend $card
     width: 40px
