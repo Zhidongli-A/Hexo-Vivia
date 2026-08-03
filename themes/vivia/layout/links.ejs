@@ -45,6 +45,22 @@
   const container = document.getElementById('links-container');
   const allLinks = [];
 
+  // 字符宽度计算：英文字母、数字、半角符号、空格 = 0.5；中文/全角符号 = 1
+  const CJK_RE = /[\u4e00-\u9fa5\u3040-\u309f\u30a0-\u30ff\u3000-\u303f\uff00-\uffef]/;
+  const charWidth = c => CJK_RE.test(c) ? 1 : 0.5;
+  const descWidth = s => [...s].reduce((w, c) => w + charWidth(c), 0);
+  const truncateDesc = (s, maxW = 10) => {
+    if (!s) return '';
+    let w = 0, out = '';
+    for (const c of s) {
+      const cw = charWidth(c);
+      if (w + cw > maxW) break;
+      out += c;
+      w += cw;
+    }
+    return out + (out.length < s.length ? '...' : '');
+  };
+
   // 预定义的 JSON 文件列表（Hexo 会生成这些文件）
   const jsonFiles = [
     'links.json'
@@ -83,7 +99,7 @@
         </div>
         <div class="link-info">
           <div class="link-name">${link.name}</div>
-          <div class="link-desc">${link.desc ? (link.desc.length > 10 ? link.desc.slice(0, 10) + '...' : link.desc) : ''}</div>
+          <div class="link-desc" title="${link.desc || ''}">${link.desc ? truncateDesc(link.desc, 10) : ''}</div>
         </div>
       </a>
     `).join('');
