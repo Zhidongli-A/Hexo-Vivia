@@ -101,3 +101,11 @@ baidu_analytics: false
 
 archive_generator:
   per_page: 0
+
+# Sakana Widget（右下角挂件）
+sakana:
+  enable: true                  # 是否启用
+  character: chisato            # 默认角色：chisato / takina
+  controls: true                # 是否显示控制条（切换角色、自动模式、GitHub、关闭）
+  rod: true                     # 是否显示弹簧杆
+  draggable: true               # 是否可拖拽

@@ -348,29 +348,26 @@
   //     content: ""
   .article-nav-btn
     @extend $card-btn
-    width: 100%
+    width: 60px
     height: 60px
     display: flex
-    padding: 0 24px
-    gap: 20px
+    padding: 0
     color: var(--neut-L75)
     font-weight: bold
     font-size: 16px
     overflow: hidden
     transition: background trans-style, color trans-style
+    flex-shrink: 0
     i
       color: var(--primary)
-      font-size: 20px
-    &.left
-      justify-content: flex-start
-    &.right
-      justify-content: flex-end
+      font-size: 22px
+    &.left, &.right
+      justify-content: center
     &.disabled
       opacity: 0
+      pointer-events: none
     .title-text
-      white-space: nowrap
-      overflow: hidden
-      text-overflow: ellipsis
+      display: none
 
 .article-nav-link-wrap
   text-decoration: none

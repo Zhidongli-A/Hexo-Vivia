@@ -1,0 +1,41 @@
+<% if (theme.sakana && theme.sakana.enable) { %>
+  <div id="sakana-widget"></div>
+
+  <style>
+    #sakana-widget {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      width: 160px;
+      height: 160px;
+      z-index: 100;
+      pointer-events: auto;
+    }
+    @media (max-width: 768px) {
+      #sakana-widget {
+        width: 120px;
+        height: 120px;
+        right: 8px;
+        bottom: 8px;
+      }
+    }
+  </style>
+
+  <script>
+    function initSakanaWidget() {
+      new SakanaWidget({
+        size: 200,
+        autoFit: true,
+        controls: <%- theme.sakana.controls !== false ? 'true' : 'false' %>,
+        rod: <%- theme.sakana.rod !== false ? 'true' : 'false' %>,
+        draggable: <%- theme.sakana.draggable !== false ? 'true' : 'false' %>,
+        character: '<%- theme.sakana.character || "chisato" %>'
+      }).mount('#sakana-widget');
+    }
+  </script>
+  <script
+    async
+    onload="initSakanaWidget()"
+    src="https://cdn.jsdelivr.net/npm/sakana-widget@3.0.1/lib/index.umd.min.js"
+  ></script>
+<% } %>
