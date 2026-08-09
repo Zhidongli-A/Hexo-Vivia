@@ -20,13 +20,11 @@
       #banner
         opacity: 1
         top: 0
-    &[hasBanner="desktop"]      // hide banner for mobile view if the post has cover image
-      @media mq-normal          // duplicated code because @extend doesn't work inside @media
+    &[hasBanner="desktop"]
+      @media mq-normal
         #nav
           height: calc(40vh - 72px)
           filter: drop-shadow(0px 4px 4px rgba(0,0,0,0.04))
-          &.is_home
-            height: calc(60vh - 72px)
         #banner
           opacity: 1
           top: 0

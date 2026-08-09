@@ -24,7 +24,6 @@ tag_dir: tags
 archive_dir: archives
 category_dir: categories
 code_dir: downloads/code
-i18n_dir: ':lang'
 skip_render:
   - Resource/**/*
 new_post_name: ':title.md'
@@ -76,3 +75,11 @@ robotstxt:
   allow:
     - '/'
   sitemap: 'https://zhidongli.top/sitemap.xml'
+
+seo_friendly_sitemap:
+  path: sitemap.xml
+  index: false
+  tags: false
+  categories: true
+  posts: true
+  pages: true
