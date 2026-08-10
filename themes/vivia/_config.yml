@@ -2,6 +2,7 @@
 menu:                      # 导航栏上的链接
   主页: /
   归档: /archives
+  聊天: /chat
   友链: /links
   状态: /status
   关于: /about
@@ -109,3 +110,9 @@ sakana:
   controls: true                # 是否显示控制条（切换角色、自动模式、GitHub、关闭）
   rod: true                     # 是否显示弹簧杆
   draggable: true               # 是否可拖拽
+
+# AI 聊天
+chat:
+  enable: true                  # 是否启用 AI 聊天面板
+  apiUrl: https://easymodelapi.zhidongli.top/v1/chat/completions
+  # OpenAI Chat Completions 兼容，body: { messages: [...] }

@@ -1,0 +1,304 @@
+// =====================================================
+//  聊天页 - 暗色玻璃 + OKLCH 主题贴合
+// =====================================================
+
+// 聊天页主区域：占满整个主内容列（顶到侧栏交界）
+.chat-page-main
+  display: flex
+  flex-direction: column
+  min-height: calc(100vh - 220px)
+
+.chat-page-entry
+  display: flex
+  flex-direction: column
+  flex: 1 1 auto
+  min-height: 480px
+  padding: 0 8px
+
+// ── 消息区 ──
+.chat-messages
+  display: flex
+  flex-direction: column
+  gap: 16px
+  padding: 12px 0 24px
+  flex: 1 1 auto
+  min-height: 360px
+  max-height: calc(100vh - 320px)
+  overflow-y: auto
+  scroll-behavior: smooth
+  &::-webkit-scrollbar
+    width: 6px
+  &::-webkit-scrollbar-thumb
+    background: rgba(255, 255, 255, 0.10)
+    border-radius: 3px
+  &::-webkit-scrollbar-thumb:hover
+    background: rgba(255, 255, 255, 0.18)
+  &::-webkit-scrollbar-track
+    background: transparent
+  @media mq-mobile
+    max-height: 55vh
+
+// ── 单条消息 ──
+.chat-msg
+  display: flex
+  width: 100%
+  opacity: 0
+  transform: translateY(6px)
+  transition: opacity 0.25s ease, transform 0.25s ease
+  &.chat-msg-in
+    opacity: 1
+    transform: translateY(0)
+  &.chat-msg-bot
+    justify-content: flex-start
+  &.chat-msg-user
+    justify-content: flex-end
+
+.chat-bubble
+  max-width: min(78%, 620px)
+  padding: 12px 16px
+  border-radius: 14px
+  font-size: 15px
+  line-height: 1.65
+  word-wrap: break-word
+  word-break: break-word
+  white-space: pre-wrap
+  color: oklch(92% 0.01 0)
+  background: rgba(255, 255, 255, 0.05)
+  border: 1px solid rgba(255, 255, 255, 0.06)
+  border-top-left-radius: 4px
+
+// 用户消息 - 用主题色低饱和，绝不粉
+.chat-msg-user .chat-bubble
+  background: unquote('oklch(28% 0.015 var(--primary-hue) / 0.55)')
+  color: unquote('oklch(95% 0.01 var(--primary-hue))')
+  border: 1px unquote('solid oklch(45% 0.04 var(--primary-hue) / 0.45)')
+  border-top-left-radius: 14px
+  border-top-right-radius: 4px
+
+// 欢迎消息
+.chat-msg-welcome .chat-bubble
+  background: rgba(255, 255, 255, 0.04)
+  border-style: dashed
+  border-color: rgba(255, 255, 255, 0.10)
+  color: oklch(78% 0.01 0)
+  font-style: italic
+
+
+// ── 打字动画 ──
+.chat-bubble-typing
+  display: inline-flex
+  align-items: center
+  gap: 6px
+  padding: 16px 18px
+  .chat-dot
+    width: 7px
+    height: 7px
+    border-radius: 50%
+    background: oklch(75% 0.01 0)
+    animation: chat-bounce 1.2s ease-in-out infinite
+    &:nth-child(2)
+      animation-delay: 0.15s
+    &:nth-child(3)
+      animation-delay: 0.3s
+
+@keyframes chat-bounce
+  0%, 60%, 100%
+    transform: translateY(0)
+    opacity: 0.5
+  30%
+    transform: translateY(-5px)
+    opacity: 1
+
+
+// ── 输入区 ──
+.chat-input-bar
+  padding: 14px 0 6px
+  margin-top: auto
+  border-top: 1px solid unquote('oklch(60% 0.02 var(--primary-hue) / 0.15)')
+  position: sticky
+  bottom: 0
+  background: var(--card-background)
+  backdrop-filter: blur(12px) saturate(1.2)
+  -webkit-backdrop-filter: blur(12px) saturate(1.2)
+  @media mq-mobile
+    padding: 10px 0 4px
+
+.chat-input-wrap
+  position: relative
+  background: var(--input-field)
+  border: 1px solid unquote('oklch(60% 0.025 var(--primary-hue) / 0.30)')
+  border-radius: 16px
+  padding: 12px 48px 12px 16px
+  display: flex
+  align-items: center
+  transition: border-color 0.18s, background 0.18s
+  &:hover
+    border-color: unquote('oklch(65% 0.03 var(--primary-hue) / 0.45)')
+    background: rgba(255, 255, 255, 0.12)
+  &:focus-within
+    border-color: unquote('oklch(70% 0.04 var(--primary-hue) / 0.55)')
+    background: rgba(255, 255, 255, 0.15)
+
+.chat-input
+  flex: 1
+  width: 100%
+  min-height: 22px
+  max-height: 66px
+  padding: 0
+  background: transparent
+  border: none
+  outline: none
+  resize: none
+  font-size: 15px
+  font-family: inherit
+  line-height: 22px
+  color: oklch(96% 0.005 0)
+  white-space: pre-wrap
+  word-break: break-word
+  overflow-y: auto
+  overflow-x: hidden
+  scrollbar-width: none
+  align-self: center
+  &::-webkit-scrollbar
+    display: none
+
+.chat-send-btn
+  position: absolute
+  right: 6px
+  bottom: 6px
+  width: 34px
+  height: 34px
+  border-radius: 12px
+  border: 1px solid unquote('oklch(60% 0.025 var(--primary-hue) / 0.20)')
+  background: rgba(50, 50, 58, 0.25)
+  color: unquote('oklch(60% 0.04 var(--primary-hue) / 0.85)')
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  cursor: pointer
+  transition: background 0.18s, color 0.18s, border-color 0.18s, transform 0.12s, opacity 0.18s
+  &:hover:not(:disabled)
+    background: rgba(60, 60, 68, 0.35)
+    color: unquote('oklch(80% 0.06 var(--primary-hue) / 0.95)')
+  &:active:not(:disabled)
+    background: rgba(65, 65, 74, 0.40)
+    transform: scale(0.92)
+  &:disabled
+    opacity: 0.3
+    cursor: not-allowed
+
+
+// ── Markdown 渲染（仅 bot 消息） ──
+.chat-bubble-md
+  white-space: pre-line
+  p, ul, ol, blockquote, pre, table
+    margin: 0
+  p
+    margin: 0 0 0.55em
+    &:last-child
+      margin-bottom: 0
+  h1, h2, h3, h4, h5, h6
+    margin: 0.7em 0 0.35em
+    font-weight: 600
+    line-height: 1.4
+    &:first-child
+      margin-top: 0
+    &:last-child
+      margin-bottom: 0
+  h1
+    font-size: 1.2em
+  h2
+    font-size: 1.12em
+  h3, h4, h5, h6
+    font-size: 1.02em
+  ul, ol
+    padding-left: 1.4em
+    margin: 0 0 0.55em
+  li
+    margin: 0 0 0.2em
+    &:last-child
+      margin-bottom: 0
+  code
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace
+    font-size: 0.9em
+    padding: 1px 6px
+    border-radius: 4px
+    background: rgba(0, 0, 0, 0.35)
+    color: unquote('oklch(88% 0.08 var(--primary-hue))')
+  pre
+    margin: 0.55em 0
+    padding: 12px 14px
+    border-radius: 10px
+    background: rgba(0, 0, 0, 0.45)
+    overflow-x: auto
+    font-size: 13px
+    line-height: 1.55
+    border: 1px solid rgba(255, 255, 255, 0.06)
+    code
+      padding: 0
+      background: transparent
+      color: oklch(88% 0.01 0)
+      font-size: inherit
+      white-space: pre
+  a
+    color: unquote('oklch(85% 0.10 var(--primary-hue))')
+    text-decoration: underline
+    text-decoration-color: unquote('oklch(60% 0.06 var(--primary-hue) / 0.4)')
+    text-underline-offset: 2px
+    transition: color 0.15s
+    word-break: break-all
+    &:hover
+      color: unquote('oklch(92% 0.12 var(--primary-hue))')
+  blockquote
+    margin: 0.55em 0
+    padding: 4px 12px
+    border-left: 3px solid unquote('oklch(60% 0.04 var(--primary-hue) / 0.5)')
+    color: oklch(78% 0.01 0)
+    background: rgba(255, 255, 255, 0.03)
+    border-radius: 0 6px 6px 0
+  hr
+    border: 0
+    height: 1px
+    background: rgba(255, 255, 255, 0.10)
+    margin: 0.8em 0
+  table
+    border-collapse: collapse
+    margin: 0.55em 0
+    font-size: 0.92em
+    width: 100%
+    display: block
+    overflow-x: auto
+  th, td
+    border: 1px solid rgba(255, 255, 255, 0.10)
+    padding: 6px 10px
+    text-align: left
+  th
+    background: rgba(255, 255, 255, 0.04)
+    font-weight: 600
+  strong
+    font-weight: 600
+    color: oklch(96% 0.01 0)
+  em
+    font-style: italic
+  br
+    display: block
+    content: ""
+    margin-top: 0.3em
+  // KaTeX
+  .katex
+    color: oklch(95% 0.01 0)
+    font-size: 1.02em
+  .katex-display
+    margin: 0.6em 0
+    padding: 0
+    overflow-x: auto
+    overflow-y: hidden
+    &::-webkit-scrollbar
+      height: 4px
+    &::-webkit-scrollbar-thumb
+      background: unquote('oklch(60% 0.04 var(--primary-hue) / 0.4)')
+      border-radius: 2px
+    .katex
+      color: oklch(95% 0.01 0)
+  .katex-error
+    color: oklch(75% 0.12 25)

@@ -60,6 +60,11 @@
       fetchStatus();
     }
 
+    // 初始加载：聊天页初始化
+    if (document.getElementById('chat-messages') && typeof window.initChat === 'function') {
+      window.initChat();
+    }
+
     // 初始加载也应用 stagger 入场，并初始化 Giscus
     applyStagger();
     initGiscus();
@@ -81,6 +86,10 @@
 
       if (document.getElementById('status-container')) {
         fetchStatus();
+      }
+
+      if (document.getElementById('chat-messages') && typeof window.initChat === 'function') {
+        window.initChat();
       }
 
       // 3. Giscus 加载外部脚本，再延迟一帧，
