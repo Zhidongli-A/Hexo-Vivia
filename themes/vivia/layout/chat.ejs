@@ -1,36 +1,18 @@
 <article id="page-<%= page.slug %>" class="h-entry article article-type-page chat-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+<style>body{background:transparent;}</style>
   <div class="article-inner">
     <div class="article-main chat-page-main">
       <header class="article-header">
         <%- partial('_partial/post/title', {post: page, index: false, class_name: 'p-name article-title'}) %>
         <div class="meta-info-bar">
           <div class="meta-info">
-            <i class="fa-regular fa-comment-dots"></i> 与 AI 对话
+            
           </div>
         </div>
       </header>
-      <div class="e-content article-entry chat-page-entry" itemprop="articleBody">
-
-        <div id="chat-messages" class="chat-messages">
-          <div class="chat-msg chat-msg-bot chat-msg-welcome">
-            <div class="chat-bubble">
-              有什么想聊的？可以直接在下方输入。
-            </div>
-          </div>
-        </div>
-
-        <form id="chat-form" class="chat-input-bar" autocomplete="off">
-          <div class="chat-input-wrap">
-            <textarea id="chat-input" class="chat-input" rows="1" maxlength="2000"></textarea>
-            <button id="chat-send" class="chat-send-btn" type="button">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4 20-7Z"/><path d="M22 2 11 13"/></svg>
-            </button>
-          </div>
-        </form>
-
-        <%- page.content %>
-
-      </div>
+      <div style="position:fixed;top:0;left:0;width:100%;height:100%;border:none;background:transparent;">
+  <iframe src="https://easymodelapi.zhidongli.top" style="width:100%;height:100%;border:none;" allow="fullscreen" allowtransparency="true"></iframe>
+</div>
     </div>
   </div>
 </article>
