@@ -1,120 +1,96 @@
 /**
- * 聊天页 - 走 easymodelapi.zhidongli.top
- * 协议: OpenAI Chat Completions 兼容
- * 会话内保留上下文（不持久化，刷新即清空）
+ * 重构聊天页面脚本 - 保持原有功能与样式
+ * 兼容 OpenAI Chat Completions 接口
+ * 功能：发送、接收、渲染 Markdown 与 LaTeX、显示耗时/Token 信息
  */
-document.addEventListener('DOMContentLoaded', function () {
+
+document.addEventListener('DOMContentLoaded', () => {
   'use strict';
 
+  // ---------- 配置 ----------
   const API_URL = 'https://easymodelapi.zhidongli.top/v1/chat/completions';
-  const MAX_TURNS = 1000;
-  // 用于记录最近一次回答的耗时和 token 数
-  let lastInfo = {duration: 0, tokens: 0};
+  const MAX_TURNS = 1000; // 对话最大轮数（每轮包含用户+AI）
+  const MAX_INPUT_HEIGHT = 66; // 输入框最大高度(px)
 
-  // 清理旧版 localStorage 缓存
-  try { localStorage.removeItem('vivia-chat-history-v1'); } catch (e) {}
-
-  const form   = document.getElementById('chat-form');
-  const input  = document.getElementById('chat-input');
-  const sendBtn = document.getElementById('chat-send');
-  // Ensure button does not触发表单提交
-  sendBtn.setAttribute('type', 'button');
-  sendBtn.addEventListener('click', e => {
-    e.preventDefault();
-    if (sendBtn.disabled) return;
-    sendMessage();
-  });
-
-  const msgBox = document.getElementById('chat-messages');
-
-  if (!form || !input || !sendBtn || !msgBox) return;
-
+  // ---------- 状态 ----------
+  let lastInfo = { duration: 0, tokens: 0 };
   const messages = [];
 
-  function escapeHTML(str) {
-    return String(str).replace(/[&<>"']/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
-  }
-  function renderMarkdown(text) {
+  // ---------- DOM 元素 ----------
+  const form = document.getElementById('chat-form');
+  const input = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send');
+  const msgBox = document.getElementById('chat-messages');
+
+  // 防止表单实际提交导致页面刷新
+if (form) {
+  form.removeAttribute('action'); // remove any action attribute
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    e.stopImmediatePropagation();
+  }, { capture: true });
+}
+// 按钮必须是普通 button，防止默认提交
+if (sendBtn) {
+  sendBtn.type = 'button'; // directly set type property
+}
+
+  // ---------- 工具函数 ----------
+  const escapeHTML = str => String(str).replace(/[&<>"']/g, c => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  })[c]));
+
+  const renderMarkdown = text => {
     if (typeof marked === 'undefined' || !marked || !marked.parse) return escapeHTML(text);
-    const str = String(text);
+    const raw = String(text);
+    // 如果 KaTeX 不可用，仅使用 marked
     if (typeof katex === 'undefined' || !katex || !katex.renderToString) {
       try {
         if (typeof marked.setOptions === 'function') {
           marked.setOptions({ breaks: false, gfm: true, headerIds: false, mangle: false });
         }
-        return marked.parse(str, { breaks: false, gfm: true });
-      } catch (e) { return escapeHTML(str); }
+        return marked.parse(raw, { breaks: false, gfm: true });
+      } catch (e) { return escapeHTML(raw); }
     }
+    // KaTeX 可用时，先抽取数学块再交给 marked
     const mathBlocks = [];
     const PH = '\u0000MATHBLOCK';
-    let processed = str
-      .replace(/<equation>([\s\S]*?)<\/equation>/gi, (m, body) => {
-        const i = mathBlocks.length; mathBlocks.push({ display: true, body });
-        return PH + i + '\u0000';
-      })
-      .replace(/```(?:math|latex|tex|katex)\s*([\s\S]*?)```/g, (m, body) => {
-        const i = mathBlocks.length; mathBlocks.push({ display: true, body });
-        return PH + i + '\u0000';
-      })
-      .replace(/(\\begin\{(?:equation\*?|align\*?|gather\*?|multline\*?)\}[\s\S]*?\\end\{(?:equation\*?|align\*?|gather\*?|multline\*?)\})/g, (m, body) => {
-        const i = mathBlocks.length; mathBlocks.push({ display: true, body });
-        return PH + i + '\u0000';
-      })
-      .replace(/\\\[([\s\S]*?)\\\]/g, (m, body) => {
-        const i = mathBlocks.length; mathBlocks.push({ display: true, body });
-        return PH + i + '\u0000';
-      })
-      .replace(/\$\$([\s\S]*?)\$\$/g, (m, body) => {
-        const i = mathBlocks.length; mathBlocks.push({ display: true, body });
-        return PH + i + '\u0000';
-      })
-      .replace(/\\\(([\s\S]*?)\\\)/g, (m, body) => {
-        const i = mathBlocks.length; mathBlocks.push({ display: false, body });
-        return PH + i + '\u0000';
-      })
-      .replace(/(^|[^\\$])\$[^\$\n]*[\\^_][^\$\n]*\$(?!\$)/g, (m, pre, body) => {
-        const i = mathBlocks.length; mathBlocks.push({ display: false, body });
-        return pre + PH + i + '\u0000';
-      });
+    const processed = raw
+      .replace(/<equation>([\s\S]*?)<\/equation>/gi, (m, b) => { mathBlocks.push({ display: true, body: b }); return PH + (mathBlocks.length - 1) + '\u0000'; })
+      .replace(/```(?:math|latex|tex|katex)\s*([\s\S]*?)```/g, (m, b) => { mathBlocks.push({ display: true, body: b }); return PH + (mathBlocks.length - 1) + '\u0000'; })
+      .replace(/(\\begin\{(?:equation\*?|align\*?|gather\*?|multline\*?)\}[\s\S]*?\\end\{(?:equation\*?|align\*?|gather\*?|multline\*?)\})/g, (m, b) => { mathBlocks.push({ display: true, body: b }); return PH + (mathBlocks.length - 1) + '\u0000'; })
+      .replace(/\\\[([\s\S]*?)\\\]/g, (m, b) => { mathBlocks.push({ display: true, body: b }); return PH + (mathBlocks.length - 1) + '\u0000'; })
+      .replace(/\$\$([\s\S]*?)\$\$/g, (m, b) => { mathBlocks.push({ display: true, body: b }); return PH + (mathBlocks.length - 1) + '\u0000'; })
+      .replace(/\\\(([\s\S]*?)\\\)/g, (m, b) => { mathBlocks.push({ display: false, body: b }); return PH + (mathBlocks.length - 1) + '\u0000'; })
+      .replace(/(^|[^\\$])\$([^\$\n]*?)[\^_][^\$\n]*\$(?!\$)/g, (m, pre, b) => { mathBlocks.push({ display: false, body: b }); return pre + PH + (mathBlocks.length - 1) + '\u0000'; });
     let html;
     try {
       html = marked.parse(processed, { breaks: false, gfm: true });
-    } catch (e) { return escapeHTML(str); }
+    } catch (e) { return escapeHTML(raw); }
     const re = new RegExp('\u0000MATHBLOCK(\\d+)\u0000', 'g');
-    html = html.replace(re, (m, idx) => {
-      const block = mathBlocks[parseInt(idx, 10)];
+    return html.replace(re, (m, idx) => {
+      const blk = mathBlocks[parseInt(idx, 10)];
       try {
-        return katex.renderToString(block.body, {
-          displayMode: block.display,
-          throwOnError: false
-        });
-      } catch (e) { return escapeHTML(block.body); }
+        return katex.renderToString(blk.body, { displayMode: blk.display, throwOnError: false });
+      } catch (e) { return escapeHTML(blk.body); }
     });
-    return html;
-  }
-  const MAX_INPUT_HEIGHT = 66;
+  };
 
-  function updateSize() {
+  const updateSize = () => {
     input.style.height = 'auto';
     const h = Math.min(MAX_INPUT_HEIGHT, Math.max(22, input.scrollHeight));
     input.style.height = h + 'px';
-  }
-  function scrollToBottom() {
-    msgBox.scrollTop = msgBox.scrollHeight;
-  }
+  };
 
-  function appendUser(text) {
-    const wrap = document.createElement('div');
-    wrap.className = 'chat-msg chat-msg-user';
-    wrap.innerHTML = '<div class="chat-bubble">' + escapeHTML(text) + '</div>';
-    msgBox.appendChild(wrap);
-    requestAnimationFrame(() => wrap.classList.add('chat-msg-in'));
-    scrollToBottom();
-    return wrap;
-  }
-  function renderMath(el) {
+  const scrollToBottom = () => {
+    msgBox.scrollTop = msgBox.scrollHeight;
+  };
+
+  const renderMath = el => {
     if (typeof renderMathInElement === 'undefined' || !el) return;
     try {
       renderMathInElement(el, {
@@ -128,97 +104,120 @@ document.addEventListener('DOMContentLoaded', function () {
         ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
       });
     } catch (e) {}
-  }
-  function appendBot(text) {
+  };
+
+  const appendUser = text => {
+    const wrap = document.createElement('div');
+    wrap.className = 'chat-msg chat-msg-user';
+    wrap.innerHTML = '<div class="chat-bubble">' + escapeHTML(text) + '</div>';
+    msgBox.appendChild(wrap);
+    requestAnimationFrame(() => wrap.classList.add('chat-msg-in'));
+    scrollToBottom();
+    return wrap;
+  };
+
+  const appendBot = text => {
     const wrap = document.createElement('div');
     wrap.className = 'chat-msg chat-msg-bot';
     const bubble = document.createElement('div');
     bubble.className = 'chat-bubble chat-bubble-md';
     bubble.innerHTML = renderMarkdown(text);
     renderMath(bubble);
-    // footer info directly appended after content
     const footer = document.createElement('div');
     footer.className = 'chat-footer';
-    // small top margin for slight separation
     footer.style.cssText = 'color:#888;font-size:0.85em;margin-top:2px;';
-    footer.textContent = `Gpt-Oss   回答耗时： ${lastInfo.duration}s   使用Token： ${(lastInfo.tokens/1000).toFixed(1)}K`;
+    footer.textContent = `Gpt-Oss 回答耗时:${lastInfo.duration}s 使用Token:${(lastInfo.tokens/1000).toFixed(1)}K`;
     bubble.appendChild(footer);
     wrap.appendChild(bubble);
     msgBox.appendChild(wrap);
     requestAnimationFrame(() => wrap.classList.add('chat-msg-in'));
     scrollToBottom();
     return wrap;
-  }
-  function appendTyping() {
+  };
+
+  const appendTyping = () => {
     const wrap = document.createElement('div');
     wrap.className = 'chat-msg chat-msg-bot chat-msg-typing chat-msg-in';
     wrap.innerHTML = '<div class="chat-bubble chat-bubble-typing"><span class="chat-dot"></span><span class="chat-dot"></span><span class="chat-dot"></span></div>';
     msgBox.appendChild(wrap);
     scrollToBottom();
     return wrap;
-  }
+  };
 
+  // ---------- 事件绑定 ----------
   input.addEventListener('input', updateSize);
-  // 按 Enter 直接发送，不触发表单提交
   input.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    const isImeComposing = e.isComposing || e.keyCode === 229;
+    const isEnter = e.key === 'Enter' || e.keyCode === 13;
+    if (isEnter && !e.shiftKey && !isImeComposing) {
       e.preventDefault();
       sendMessage();
     }
   });
-
-  function sendMessage() {
-  const text = input.value.trim();
-  if (!text || sendBtn.disabled) return;
-
-  input.value = '';
-  input.scrollTop = 0;
-  updateSize();
-
-  const stale = msgBox.querySelector('.chat-msg-typing');
-  if (stale) stale.remove();
-
-  messages.push({ role: 'user', content: text });
-  if (messages.length > MAX_TURNS * 2) {
-    messages.splice(0, messages.length - MAX_TURNS * 2);
+  // 防止在 textarea 中 Enter 仍产生换行（兼容部分浏览器）
+  input.addEventListener('keypress', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+    }
+  });
+  if (sendBtn) {
+  sendBtn.addEventListener('click', e => {
+      e.preventDefault();
+      if (!sendBtn.disabled) sendMessage();
+    });
   }
 
-  appendUser(text);
-  sendBtn.disabled = true;
-  const typing = appendTyping();
+    // ---------- 消息发送 ----------
+  function sendMessage() {
+    const text = input.value.trim();
+    if (!text || sendBtn.disabled) return;
 
-  const fetchStart = Date.now();
-  fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages: messages.slice() })
-  })
-    .then(r => {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
+    input.value = '';
+    input.scrollTop = 0;
+    updateSize();
+
+    const stale = msgBox.querySelector('.chat-msg-typing');
+    if (stale) stale.remove();
+
+    messages.push({ role: 'user', content: text });
+    if (messages.length > MAX_TURNS * 2) {
+      messages.splice(0, messages.length - MAX_TURNS * 2);
+    }
+
+    appendUser(text);
+    sendBtn.disabled = true;
+    const typing = appendTyping();
+
+    const fetchStart = Date.now();
+    fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: messages.slice() })
     })
-    .then(data => {
-      const reply = (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '（无回复）';
-      // 计算耗时（秒）和 token 使用（K）
-      const durationSec = ((Date.now() - fetchStart) / 1000).toFixed(2);
-      const tokens = (data && data.usage && data.usage.total_tokens) ? data.usage.total_tokens : 0;
-      lastInfo = {duration: durationSec, tokens: tokens};
-      messages.push({ role: 'assistant', content: reply });
-      typing.remove();
-      appendBot(reply);
-    })
-    .catch(err => {
-      console.error('Chat fetch error:', err);
-      if (typing && typing.remove) typing.remove();
-    })
-    .finally(() => {
-      sendBtn.disabled = false;
-      input.focus();
-      updateSize();
-    });
-}
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(data => {
+        const reply = (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '（无回复）';
+        const durationSec = ((Date.now() - fetchStart) / 1000).toFixed(2);
+        const tokens = (data && data.usage && data.usage.total_tokens) ? data.usage.total_tokens : 0;
+        lastInfo = { duration: durationSec, tokens: tokens };
+        messages.push({ role: 'assistant', content: reply });
+        typing.remove();
+        appendBot(reply);
+      })
+      .catch(err => {
+        console.error('Chat fetch error:', err);
+        if (typing && typing.remove) typing.remove();
+      })
+      .finally(() => {
+        sendBtn.disabled = false;
+        input.focus();
+        updateSize();
+      });
+  }
 
-
-
+  // 初始化输入框高度
   updateSize();
 });
