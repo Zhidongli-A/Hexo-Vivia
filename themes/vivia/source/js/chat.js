@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   const API_URL = 'https://easymodelapi.zhidongli.top/v1/chat/completions';
   const MAX_TURNS = 1000;
+  // 用于记录最近一次回答的耗时和 token 数
+  let lastInfo = {duration: 0, tokens: 0};
 
   // 清理旧版 localStorage 缓存
   try { localStorage.removeItem('vivia-chat-history-v1'); } catch (e) {}
@@ -15,13 +17,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const form   = document.getElementById('chat-form');
   const input  = document.getElementById('chat-input');
   const sendBtn = document.getElementById('chat-send');
-  // 为按钮添加直接点击监听，直接调用发送逻辑
+  // Ensure button does not触发表单提交
+  sendBtn.setAttribute('type', 'button');
   sendBtn.addEventListener('click', e => {
-  e.preventDefault(); // 阻止表单默认提交导致页面刷新
-  console.log('send button clicked');
-  if (sendBtn.disabled) return;
-  sendMessage();
-});
+    e.preventDefault();
+    if (sendBtn.disabled) return;
+    sendMessage();
+  });
+
   const msgBox = document.getElementById('chat-messages');
 
   if (!form || !input || !sendBtn || !msgBox) return;
@@ -77,9 +80,6 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     let html;
     try {
-      if (typeof marked.setOptions === 'function') {
-        marked.setOptions({ breaks: false, gfm: true, headerIds: false, mangle: false });
-      }
       html = marked.parse(processed, { breaks: false, gfm: true });
     } catch (e) { return escapeHTML(str); }
     const re = new RegExp('\u0000MATHBLOCK(\\d+)\u0000', 'g');
@@ -136,6 +136,13 @@ document.addEventListener('DOMContentLoaded', function () {
     bubble.className = 'chat-bubble chat-bubble-md';
     bubble.innerHTML = renderMarkdown(text);
     renderMath(bubble);
+    // footer info directly appended after content
+    const footer = document.createElement('div');
+    footer.className = 'chat-footer';
+    // small top margin for slight separation
+    footer.style.cssText = 'color:#888;font-size:0.85em;margin-top:2px;';
+    footer.textContent = `Gpt-Oss   回答耗时： ${lastInfo.duration}s   使用Token： ${(lastInfo.tokens/1000).toFixed(1)}K`;
+    bubble.appendChild(footer);
     wrap.appendChild(bubble);
     msgBox.appendChild(wrap);
     requestAnimationFrame(() => wrap.classList.add('chat-msg-in'));
@@ -152,10 +159,11 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   input.addEventListener('input', updateSize);
+  // 按 Enter 直接发送，不触发表单提交
   input.addEventListener('keydown', e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
-      form.dispatchEvent(new Event('submit', { cancelable: true }));
+      sendMessage();
     }
   });
 
@@ -179,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function () {
   sendBtn.disabled = true;
   const typing = appendTyping();
 
+  const fetchStart = Date.now();
   fetch(API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -190,6 +199,10 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(data => {
       const reply = (data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '（无回复）';
+      // 计算耗时（秒）和 token 使用（K）
+      const durationSec = ((Date.now() - fetchStart) / 1000).toFixed(2);
+      const tokens = (data && data.usage && data.usage.total_tokens) ? data.usage.total_tokens : 0;
+      lastInfo = {duration: durationSec, tokens: tokens};
       messages.push({ role: 'assistant', content: reply });
       typing.remove();
       appendBot(reply);
@@ -205,12 +218,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 }
 
-// 仍保留表单的 submit 监听以兼容回车，直接调用 sendMessage
-form.addEventListener('submit', e => {
-  console.log('Chat form submitted');
-  e.preventDefault();
-  sendMessage();
-});
+
 
   updateSize();
 });
